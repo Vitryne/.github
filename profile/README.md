@@ -1,12 +1,12 @@
 <div align="center">
     <p>
         <a href="https://github.com/vitryne">
-            <img src="assets/logo.png" alt="Vitryne" height="120">
+            <img src="../assets/logo.png" alt="Vitryne" height="120">
         </a>
     </p>
     <p>
         <a href="https://github.com/vitryne">
-            <img src="assets/logotipoGradiente.png" alt="Vitryne" width="220">
+            <img src="../assets/logotipoGradiente.png" alt="Vitryne" width="220">
         </a>
     </p>
     <h1>A moda da sua região, na palma da sua mão.</h1>
