@@ -12,8 +12,8 @@ jobs:
         env:
           TITULO: ${{ github.event.pull_request.title }}
         run: |
-          # Formato: "feat(ETI-183): descricao"
-          PADRAO='^(feat|fix|docs|refactor|test|chore|build|ci|perf)\(ETI-[0-9]+\)!?: .+'
+          # Formato: "ETI-183 feat: descricao"
+          PADRAO='^ETI-[0-9]+ (feat|fix|docs|refactor|test|chore|build|ci|perf)!?: .+'
 
           if echo "$TITULO" | grep -Eq "$PADRAO"; then
             echo "Título válido: $TITULO"
@@ -22,8 +22,7 @@ jobs:
 
           echo "::error::Título fora do padrão -> '$TITULO'"
           echo ""
-          echo "Formato esperado: tipo(ETI-123): descrição em minúscula"
-          echo "Atenção: SEM espaço antes do parêntese"
+          echo "Formato esperado: ETI-123 tipo: descrição em minúscula"
           echo "Tipos: feat fix docs refactor test chore build ci perf"
-          echo "Exemplo: feat(ETI-183): permitir cadastro de lojista"
+          echo "Exemplo: ETI-183 feat: adiciona cadastro de lojista"
           exit 1
