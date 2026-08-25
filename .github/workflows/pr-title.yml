@@ -2,7 +2,7 @@ name: Validar título - PR
 
 on:
   workflow_call:
-
+  
 jobs:
   titulo:
     name: Formato do título
@@ -12,17 +12,17 @@ jobs:
         env:
           TITULO: ${{ github.event.pull_request.title }}
         run: |
-          # Formato: "ETI-183 feat: descricao"
-          PADRAO='^ETI-[0-9]+ (feat|fix|docs|refactor|test|chore|build|ci|perf)!?: .+'
-
-          if echo "$TITULO" | grep -Eq "$PADRAO"; then
+          # Formato: "feat/ETI-183-cadastro-lojista"
+          PADRAO='^(feat|fix|docs|refactor|test|chore|build|ci|perf)/ETI-[0-9]+-[a-z0-9]+(-[a-z0-9]+)*$'
+          if echo "$TITULO" | LC_ALL=C grep -Eq "$PADRAO"; then
             echo "Título válido: $TITULO"
             exit 0
           fi
-
-          echo "::error::Título fora do padrão -> '$TITULO'"
+          echo "::error title=Título fora do padrão::'$TITULO'"
           echo ""
-          echo "Formato esperado: ETI-123 tipo: descrição em minúscula"
+          echo "Formato esperado: tipo/ETI-123-descricao-em-kebab-case"
           echo "Tipos: feat fix docs refactor test chore build ci perf"
-          echo "Exemplo: ETI-183 feat: adiciona cadastro de lojista"
+          echo "Descrição: minúsculas e números, palavras separadas por hífen"
+          echo "Exemplo: feat/ETI-183-cadastro-lojista"
           exit 1
+          
