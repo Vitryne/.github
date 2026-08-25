@@ -16,7 +16,7 @@ As regras que correspondem diretamente a uma NC estão marcadas com 🔻.
 ```
 main ────●─────────────────────●──────────  releases
           \                   /
-develop ──●──●──●──●──●──●───●─────────────  integração
+dev ──●──●──●──●──●──●───●─────────────  integração
               \     \     \
                ●     ●     ●                feat/ETI-183-...
 ```
@@ -24,10 +24,10 @@ develop ──●──●──●──●──●──●───●──
 | Branch | Papel |
 |---|---|
 | `main` | Somente releases. Ninguém trabalha direto aqui |
-| `develop` | Integração do time. **Toda tarefa nasce e volta para cá** |
-| `tipo/ETI-XXX-desc` | Uma tarefa do Jira. Nasce de `develop`, morre em `develop` |
+| `dev` | Integração do time. **Toda tarefa nasce e volta para cá** |
+| `tipo/ETI-XXX-desc` | Uma tarefa do Jira. Nasce de `dev`, morre em `dev` |
 
-🔻 **Toda tarefa é executada em uma branch separada, derivada de `develop`.**
+🔻 **Toda tarefa é executada em uma branch separada, derivada de `dev`.**
 Trabalhar em uma task sem a branch correspondente é NC **Grave**.
 
 ## O fluxo
@@ -42,11 +42,11 @@ Mova o card para "Em andamento". Uma branch = um card.
 🔻 Mantenha o status do card atualizado conforme o trabalho avança. Não fazer
 isso é NC.
 
-### 2. Atualize a `develop` — não pule este passo
+### 2. Atualize a `dev` - não pule este passo
 
 ```bash
-git checkout develop
-git pull origin develop
+git checkout dev
+git pull origin dev
 ```
 
 ### 3. Crie a branch
@@ -93,16 +93,8 @@ git push
 única opção disponível já é a correta.
 
 **Consequência prática:** todos os commits da sua branch vão para a
-`develop` e ficam no histórico permanentemente. Eles não são fundidos nem
+`dev` e ficam no histórico permanentemente. Eles não são fundidos nem
 apagados. Por isso a mensagem de cada commit importa - veja a seção abaixo.
-
-### 7. Limpe
-
-```bash
-git checkout develop
-git pull origin develop
-git branch -d feat/ETI-183-cadastro-lojista
-```
 
 ---
 
@@ -174,14 +166,11 @@ ninguém perder trabalho.
 
 ## Título do PR
 
-Mesmo formato do commit:
+Mesmo formato da Branch:
 
 ```
-ETI-183 feat: adiciona cadastro de lojista com CNPJ
+feat/ETI-183-cadastro-lojista
 ```
-
-O título vira a mensagem do commit de merge, então ele também aparece no
-histórico.
 
 ---
 
@@ -204,12 +193,12 @@ linter, e discussão de estilo em review só desgasta a equipe.
 
 ---
 
-## Release: `develop` → `main`
+## Release: `dev` → `main`
 
 A `main` recebe apenas releases, ao fim de cada sprint ou quando o time
 decidir que há um conjunto estável.
 
-1. Abre-se um PR de `develop` para `main`
+1. Abre-se um PR de `dev` para `main`
 2. Título: `ETI-XXX chore: release sprint N`
 3. Mesma exigência de aprovação
 4. Merge commit, como qualquer outro
@@ -222,9 +211,9 @@ Correção urgente de algo que está na `main`:
 
 1. Branch a partir da `main`: `fix/ETI-XXX-descricao`
 2. PR para `main`
-3. Depois do merge, **abra um segundo PR levando a correção para `develop`**
+3. Depois do merge, **abra um segundo PR levando a correção para `dev`**
 
-Se pular o passo 3, a correção some na próxima release porque `develop`
+Se pular o passo 3, a correção some na próxima release porque `dev`
 não a conhece.
 
 ---
@@ -232,7 +221,7 @@ não a conhece.
 ## Trabalho que atravessa repositórios
 
 1. **Mesma chave Jira** nos dois repositórios
-2. **Backend mergeia primeiro, sempre.** Cliente nunca vai para a `develop`
+2. **Backend mergeia primeiro, sempre.** Cliente nunca vai para a `dev`
    chamando endpoint que ainda não existe
    
 ---
@@ -274,7 +263,7 @@ acadêmico. Use gerador de dados fake.
 | Comando | O que faz | Quando usar |
 |---|---|---|
 | `git reset --soft HEAD~1` | Desfaz o commit, **mantém as alterações** | Seguro. Errou a mensagem antes do push |
-| `git reset --hard` | Desfaz o commit **e apaga as alterações** | Só na sua branch local. **Nunca em `main` ou `develop`** |
+| `git reset --hard` | Desfaz o commit **e apaga as alterações** | Só na sua branch local. **Nunca em `main` ou `dev`** |
 | `git push --force` | Sobrescreve o histórico remoto | **Bloqueado.** Único jeito de perder trabalho no Git |
 | `git branch -d` | Deleta **se já foi mergeada** | Seguro. Use sempre este |
 | `git branch -D` | Deleta **mesmo sem merge** | Perde o que não foi mergeado |
