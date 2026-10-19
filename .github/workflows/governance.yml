@@ -1,0 +1,74 @@
+name: Governança do Pull Request
+
+on:
+  workflow_call:
+
+permissions:
+  contents: read
+
+jobs:
+  governanca:
+    name: Governança
+    runs-on: ubuntu-latest
+    env:
+      PADRAO: '^(feat|fix|docs|refactor|test|chore|build|ci|perf)/ETI-[0-9]+-[a-z0-9]+(-[a-z0-9]+)*$'
+    steps:
+      - name: Validar título do PR
+        env:
+          TITULO: ${{ github.event.pull_request.title }}
+        run: |
+          if echo "$TITULO" | LC_ALL=C grep -Eq "$PADRAO"; then
+            echo "Título válido: $TITULO"
+            exit 0
+          fi
+          echo "::error title=Título fora do padrão::'$TITULO'. Esperado: tipo/ETI-123-descricao-em-kebab-case (ex.: feat/ETI-183-cadastro-lojista)"
+          exit 1
+
+      - name: Validar nome da branch
+        if: ${{ !cancelled() }}
+        env:
+          BRANCH: ${{ github.head_ref }}
+        run: |
+          if [ "$BRANCH" = "dev" ]; then
+            echo "PR de release (dev → main): nome de branch não se aplica."
+            exit 0
+          fi
+          if echo "$BRANCH" | LC_ALL=C grep -Eq "$PADRAO"; then
+            echo "Branch válida: $BRANCH"
+            exit 0
+          fi
+          echo "::error title=Branch fora do padrão::'$BRANCH'. Esperado: tipo/ETI-123-descricao-em-kebab-case"
+          exit 1
+
+      - name: Baixar histórico do repositório
+        if: ${{ !cancelled() }}
+        uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+
+      - name: Verificar mensagens de commit
+        if: ${{ !cancelled() }}
+        env:
+          BRANCH: ${{ github.head_ref }}
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+          PADRAO_COMMIT: '^ETI-[0-9]+ (feat|fix|docs|refactor|test|chore|build|ci|perf): .+'
+        run: |
+          if [ "$BRANCH" = "dev" ]; then
+            echo "PR de release (dev → main): commits já foram verificados nos PRs de cada tarefa."
+            exit 0
+          fi
+          FORA=0
+          while IFS= read -r linha; do
+            hash="${linha%% *}"
+            msg="${linha#* }"
+            if ! echo "$msg" | LC_ALL=C grep -Eq "$PADRAO_COMMIT"; then
+              echo "::warning title=Commit fora do padrão::$hash $msg"
+              FORA=$((FORA + 1))
+            fi
+          done < <(git log --no-merges --format='%h %s' "$BASE_SHA..$HEAD_SHA")
+          if [ "$FORA" -eq 0 ]; then
+            echo "Todos os commits seguem o padrão."
+          else
+            echo "$FORA commit(s) fora do padrão. Não bloqueia o merge, mas o revisor deve cobrar."
+          fi
