@@ -186,6 +186,32 @@ release: o título segue o mesmo formato, com o card do Jira correspondente.
 
 ---
 
+## Verificações automáticas
+
+Todo PR passa pelo check **`governanca / Governança`**, que confere:
+
+| O quê | Fora do padrão |
+| --- | --- |
+| Título do PR | Bloqueia o merge |
+| Nome da branch | Bloqueia o merge |
+| Mensagens de commit | Só avisa, com uma anotação amarela no PR |
+
+**Título errado:** edite o título do PR. O check roda de novo sozinho.
+
+**Branch com nome errado:** o nome não pode ser trocado. Crie uma branch nova
+a partir da atual, que já leva todos os commits, e abra outro PR:
+
+```bash
+git checkout -b feat/ETI-183-nome-certo
+git push -u origin feat/ETI-183-nome-certo
+```
+
+Feche o PR antigo com um comentário apontando para o novo.
+
+**Commit fora do padrão:** não bloqueia, porque um commit já enviado só se
+corrige com `push --force`, que é proibido. O revisor cobra, e os próximos
+commits saem no padrão.
+
 ---
 
 ## Como revisar bem
