@@ -1,25 +1,14 @@
-## O que faz
+## O que muda?
 
-<!-- Uma frase curta do que serã mexido (normalemente em duas frases no máximo). -->
-
-Card no Jira: ETI-XXX
-
-## Como testar
-
-<!-- Passo a passo para quem revisa EXECUTAR, não só ler o código. -->
-
-1.
-2.
-3.
+<!-- Resuma brevemente o que foi alterado e, se necessário, o motivo. -->
 
 ## Observações
 
-<!-- Opcional. Decisões que não são óbvias, o que ficou de fora, débito técnico. -->
-<!-- Depende de PR em outro repositório? Marque aqui:                            -->
+<!-- Opcional: comportamentos importantes, limitações ou decisões que merecem atenção durante a revisão. -->
 
 ---
 
-- [ ] Título no formato `tipo(ETI-XXX): descrição`
-- [ ] Nenhum `.env`, credencial ou dado pessoal real no diff
 - [ ] Testado localmente
-- [ ] Documentação atualizada caso o setup tenha mudado
+- [ ] Nenhum `.env`, credencial ou dado sensível incluído no diff
+- [ ] Documentação atualizada, caso necessário
+- [ ] Depende de PR em outro repositório? Linkado em Observações
