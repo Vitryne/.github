@@ -5,7 +5,7 @@ Documento único da equipe. Vale para todos os repositórios.
 > Este arquivo mora em `vitryne/.github` e é propagado automaticamente pelo
 > GitHub para todos os repositórios da organização.
 
-As regras deste documento derivam do **Regulamento da Escola de TI 2026**.
+As regras deste documento derivam do [**Regulamento da Escola de TI 2026**](https://github.com/Vitryne/docs/blob/main/Regulamenta%C3%A7%C3%A3o/Regulamento%20-%20ETI.pdf).
 Descumprimentos são registrados como não-conformidades (NC) e descontam nota.
 As regras que correspondem diretamente a uma NC estão marcadas com 🔻.
 
@@ -13,7 +13,7 @@ As regras que correspondem diretamente a uma NC estão marcadas com 🔻.
 
 ## Estrutura de branches
 
-```
+```txt
 main ────●─────────────────────●──────────  releases
           \                   /
 dev ──●──●──●──●──●──●───●─────────────  integração
@@ -22,7 +22,7 @@ dev ──●──●──●──●──●──●───●───�
 ```
 
 | Branch | Papel |
-|---|---|
+| --- | --- |
 | `main` | Somente releases. Ninguém trabalha direto aqui |
 | `dev` | Integração do time. **Toda tarefa nasce e volta para cá** |
 | `tipo/ETI-XXX-desc` | Uma tarefa do Jira. Nasce de `dev`, morre em `dev` |
@@ -30,14 +30,17 @@ dev ──●──●──●──●──●──●───●───�
 🔻 **Toda tarefa é executada em uma branch separada, derivada de `dev`.**
 Trabalhar em uma task sem a branch correspondente é NC **Grave**.
 
+> **Exceção:** os repositórios `docs` e `.github` não têm `dev`, só `main`.
+> Neles a branch da tarefa nasce da `main` e o PR volta para a `main`.
+> O resto do fluxo (branch por card, review, merge commit) é igual.
+
 ## O fluxo
 
 ### 1. Pegue o card no Jira
 
-🔻 A tarefa precisa **já existir no Jira** antes de você começar. Issues criadas
-à revelia (fora do planning ou sem o scrum master) são NC **Grave**.
+🔻 A tarefa precisa já existir no Jira antes de você começar. Issues criadas fora do planejamento ou sem a autorização do responsável definido pelo time são NC graves, conforme o regulamento.
 
-Mova o card para "Em andamento". Uma branch = um card.
+Mova o card para "Em andamento". Uma branch corresponde a um card.
 
 🔻 Mantenha o status do card atualizado conforme o trabalho avança. Não fazer
 isso é NC.
@@ -49,6 +52,8 @@ git checkout dev
 git pull origin dev
 ```
 
+Nos repositórios docs e .github, utilize main no lugar de dev.
+
 ### 3. Crie a branch
 
 ```bash
@@ -59,7 +64,7 @@ Formato: `tipo/ETI-XXX-descricao-curta`
 
 Minúsculas, sem acento, hífen como separador, até ~50 caracteres.
 
-```
+```txt
 feat/ETI-183-cadastro-lojista
 fix/ETI-192-calculo-frete
 docs/ETI-203-atualizar-readme
@@ -69,55 +74,61 @@ chore/ETI-215-configurar-eslint
 
 ### 4. Trabalhe e commite
 
-🔻 **Faça pelo menos um commit e um push a cada dia trabalhado.** Ficar dias
-com trabalho só na sua máquina é NC **Grave** - e o desconto é por ocorrência.
+🔻 **Faça pelo menos um commit e um push a cada dia trabalhado.** Deixar o trabalho exclusivamente na máquina local por dias é NC **grave**, com desconto por ocorrência, conforme o regulamento.
 
 ```bash
-git add .
+git status
+git add src/caminho/do/arquivo.tsx
 git commit -m "ETI-183 feat: adiciona formulário de cadastro de lojista"
-git push
 ```
+
+No **primeiro push** da branch, avise o Git para onde ela vai:
+
+```bash
+git push -u origin feat/ETI-183-cadastro-lojista
+```
+
+Daí em diante, basta `git push`.
 
 ### 5. Review
 
-- **1 aprovação** obrigatória, de quem não é o autor
-- Responda em até **24h úteis** — "vou olhar hoje à noite" já conta
-- Ninguém revisou em 24h? Cobre no canal. Revisar é trabalho, não favor
+- **Uma aprovação** obrigatória, de quem não é o autor
+- **Checks do CI verdes.** PR com check falhando não pode ser mergeado
+- O revisor deve responder em até 24 horas úteis.
+- Se não houver retorno nesse prazo, solicite apoio no canal do projeto.
 
 ### 6. Merge
 
-**Merge pull request** - é a única opção habilitada.
+Utilize a opção **Merge pull request**, que gera um merge commit conforme a configuração do repositório.
 
-🔻 O merge **precisa gerar um commit de merge** (`--no-ff`). Merge sem
-`--no-ff` é NC. Por isso squash e rebase estão desabilitados no GitHub: a
-única opção disponível já é a correta.
+🔻 O merge deve preservar o commit de merge (--no-ff). Fazer merge sem gerar esse commit é NC. Por isso, squash e rebase estão desabilitados no GitHub.
 
-**Consequência prática:** todos os commits da sua branch vão para a
-`dev` e ficam no histórico permanentemente. Eles não são fundidos nem
-apagados. Por isso a mensagem de cada commit importa - veja a seção abaixo.
+O commit de merge leva só o título do PR. A descrição fica no PR, no GitHub.
+
+**Consequência prática:** o merge commit normalmente preserva os commits individuais da branch no histórico do projeto. Por isso, a mensagem de cada commit precisa descrever adequadamente o que foi alterado.
 
 ---
 
 ## Mensagem de commit
 
-🔻 *"Se os commits não descreverem uma prévia do que está sendo commitado"* é NC.
+🔻 Commits que não descrevem adequadamente as alterações realizadas podem configurar NC, conforme o regulamento.
 
 Como usamos merge commit, **cada commit seu vai para o histórico do projeto**.
 
 ### Formato
 
-```
+```txt
 ETI-XXX tipo: descrição em minúscula, no imperativo, sem ponto final
 ```
 
-```
+```txt
 ETI-161 feat: adiciona validação de CPF no cadastro
 ETI-192 fix: corrige cálculo de frete em rotas com contorno
 ETI-203 docs: atualiza documentação dos endpoints de pedido
 ```
 
 | Tipo | Quando usar |
-|---|---|
+| --- | --- |
 | `feat` | Funcionalidade nova para o usuário |
 | `fix` | Correção de bug |
 | `docs` | Só documentação |
@@ -130,7 +141,7 @@ ETI-203 docs: atualiza documentação dos endpoints de pedido
 
 ### O que não pode
 
-```
+```txt
 wip
 teste
 agora vai
@@ -142,11 +153,9 @@ Nenhum deles descreve o que foi feito. Todos são NC.
 
 ### Regra prática
 
-Um commit por unidade de trabalho que faça sentido sozinha. Se a mensagem
-precisa de "e", provavelmente são dois commits.
+Faça commits por unidades de trabalho que façam sentido individualmente. Se uma mensagem precisar descrever várias alterações independentes, considere separá-las em commits distintos.
 
-Em dúvida entre dois tipos? Escolha um e siga. O valor está na consistência
-do formato, não na taxonomia perfeita.
+Em caso de dúvida entre dois tipos, escolha o mais adequado e mantenha a consistência do padrão.
 
 ### Errou a mensagem?
 
@@ -166,11 +175,16 @@ ninguém perder trabalho.
 
 ## Título do PR
 
-Mesmo formato da Branch:
+O título do PR deve seguir o mesmo padrão de nomenclatura da branch. O CI reprova PRs com títulos fora do padrão.
 
-```
+```txt
 feat/ETI-183-cadastro-lojista
 ```
+
+Vale também para os PRs que não saem de uma branch de tarefa, como o de
+release: o título segue o mesmo formato, com o card do Jira correspondente.
+
+---
 
 ---
 
@@ -185,7 +199,7 @@ Nesta ordem:
 5. As mensagens de commit descrevem o que foi feito?
 6. Dá para entender daqui a seis meses?
 
-O item 5 é novo e importa: os commits vão para o histórico, e commit ruim
+O item 5 importa porque os commits vão para o histórico, e commit ruim
 aprovado no review vira NC do time inteiro.
 
 **Não revise** formatação, aspas ou ponto e vírgula. Isso é trabalho do
@@ -199,7 +213,7 @@ A `main` recebe apenas releases, ao fim de cada sprint ou quando o time
 decidir que há um conjunto estável.
 
 1. Abre-se um PR de `dev` para `main`
-2. Título: `ETI-XXX chore: release sprint N`
+2. Título: `chore/ETI-XXX-release-sprint-n` (ex.: `chore/ETI-310-release-sprint-12`)
 3. Mesma exigência de aprovação
 4. Merge commit, como qualquer outro
 
@@ -211,7 +225,8 @@ Correção urgente de algo que está na `main`:
 
 1. Branch a partir da `main`: `fix/ETI-XXX-descricao`
 2. PR para `main`
-3. Depois do merge, **abra um segundo PR levando a correção para `dev`**
+3. Depois do merge, **abra um segundo PR da mesma branch `fix/...` para a
+   `dev`**, com o mesmo título
 
 Se pular o passo 3, a correção some na próxima release porque `dev`
 não a conhece.
@@ -223,13 +238,13 @@ não a conhece.
 1. **Mesma chave Jira** nos dois repositórios
 2. **Backend mergeia primeiro, sempre.** Cliente nunca vai para a `dev`
    chamando endpoint que ainda não existe
-   
+
 ---
 
 ## Segurança — regras inegociáveis
 
 | Nunca vai para o Git | Onde fica |
-|---|---|
+| --- | --- |
 | `.env` | Só na sua máquina |
 | Chaves do gateway de pagamento | `.env` |
 | Senha do banco, `JWT_SECRET` | `.env` |
@@ -238,7 +253,7 @@ não a conhece.
 | **Dump de banco com CPF/CNPJ real** | Lugar nenhum |
 
 Adicionou variável de ambiente nova? **Adicione também no `.env.example`**,
-sem o valor. Senão quebra o setup dos outros seis.
+sem o valor. Senão quebra o setup do resto do time.
 
 ### Se uma credencial vazar
 
@@ -261,10 +276,10 @@ acadêmico. Use gerador de dados fake.
 ## Comandos que exigem cuidado
 
 | Comando | O que faz | Quando usar |
-|---|---|---|
+| --- | --- | --- |
 | `git reset --soft HEAD~1` | Desfaz o commit, **mantém as alterações** | Seguro. Errou a mensagem antes do push |
 | `git reset --hard` | Desfaz o commit **e apaga as alterações** | Só na sua branch local. **Nunca em `main` ou `dev`** |
-| `git push --force` | Sobrescreve o histórico remoto | **Bloqueado.** Único jeito de perder trabalho no Git |
+| `git push --force` | Sobrescreve o histórico remoto | **Bloqueado** em `main` e `dev`, **proibido** nas demais. Único jeito de perder trabalho no Git |
 | `git branch -d` | Deleta **se já foi mergeada** | Seguro. Use sempre este |
 | `git branch -D` | Deleta **mesmo sem merge** | Perde o que não foi mergeado |
 | `git commit --amend` | Substitui o último commit | Só antes do push |
