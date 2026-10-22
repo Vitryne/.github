@@ -10,7 +10,7 @@ Lojas de moda locais são invisíveis online. O Vitryne dá a cada uma delas uma
 * [Repositórios frontend](https://github.com/Vitryne/frontend) | Portal web do consumidor e painel do lojista.
 * [Repositórios mobile](https://github.com/Vitryne/mobile)  | Aplicativo do consumidor e do entregador
 * [Repositórios documentacao](https://github.com/Vitryne/docs) | Requisitos, diagramas UML, fluxos e arquitetura
-* 
+
 Encontrou um problema? Abra uma issue no repositório correspondente.
 
 ---
