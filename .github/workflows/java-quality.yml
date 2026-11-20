@@ -1,0 +1,49 @@
+name: Qualidade Java
+
+on:
+  workflow_call:
+
+permissions:
+  contents: read
+
+jobs:
+  qualidade:
+    name: Qualidade
+    runs-on: ubuntu-latest
+    env:
+      KEY_DB: vitryne
+      KEY_DB_USER: vitryne
+      KEY_DB_PASSWORD: vitryne
+      KEY_DB_PORT: 5432
+    services:
+      postgres:
+        image: pgvector/pgvector:pg15
+        env:
+          POSTGRES_DB: vitryne
+          POSTGRES_USER: vitryne
+          POSTGRES_PASSWORD: vitryne
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+    steps:
+      - name: Baixar o código
+        uses: actions/checkout@v7
+
+      - name: Configurar o Java
+        uses: actions/setup-java@v6
+        with:
+          distribution: temurin
+          java-version: 21
+          cache: maven
+
+      - name: Gerar chaves JWT de teste
+        run: |
+          openssl genpkey -algorithm RSA -pkeyopt rsa_keygen_bits:2048 -out src/main/resources/app.key
+          openssl pkey -in src/main/resources/app.key -pubout -out src/main/resources/app.pub
+
+      - name: Build e testes
+        run: mvn -B verify
