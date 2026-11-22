@@ -5,10 +5,6 @@ Documento único da equipe. Vale para todos os repositórios.
 > Este arquivo mora em `vitryne/.github` e é propagado automaticamente pelo
 > GitHub para todos os repositórios da organização.
 
-As regras deste documento derivam do [**Regulamento da Escola de TI 2026**](https://github.com/Vitryne/docs/blob/main/Regulamenta%C3%A7%C3%A3o/Regulamento%20-%20ETI.pdf).
-Descumprimentos são registrados como não-conformidades (NC) e descontam nota.
-As regras que correspondem diretamente a uma NC estão marcadas com 🔻.
-
 ---
 
 ## Estrutura de branches
@@ -27,8 +23,7 @@ dev ──●──●──●──●──●──●───●───�
 | `dev` | Integração do time. **Toda tarefa nasce e volta para cá** |
 | `tipo/ETI-XXX-desc` | Uma tarefa do Jira. Nasce de `dev`, morre em `dev` |
 
-🔻 **Toda tarefa é executada em uma branch separada, derivada de `dev`.**
-Trabalhar em uma task sem a branch correspondente é NC **Grave**.
+**Toda tarefa é executada em uma branch separada, derivada de `dev`.** A `dev` é a branch padrão dos repositórios `frontend`, `backend` e `mobile`: um clone novo já começa nela, e todo PR novo já sugere a `dev` como destino.
 
 > **Exceção:** os repositórios `docs` e `.github` não têm `dev`, só `main`.
 > Neles a branch da tarefa nasce da `main` e o PR volta para a `main`.
@@ -38,12 +33,9 @@ Trabalhar em uma task sem a branch correspondente é NC **Grave**.
 
 ### 1. Pegue o card no Jira
 
-🔻 A tarefa precisa já existir no Jira antes de você começar. Issues criadas fora do planejamento ou sem a autorização do responsável definido pelo time são NC graves, conforme o regulamento.
+A tarefa precisa já existir no Jira antes de você começar, criada no planejamento da sprint.
 
-Mova o card para "Em andamento". Uma branch corresponde a um card.
-
-🔻 Mantenha o status do card atualizado conforme o trabalho avança. Não fazer
-isso é NC.
+Mova o card para "Em andamento" e mantenha o status atualizado conforme o trabalho avança. Uma branch corresponde a um card.
 
 ### 2. Atualize a `dev` - não pule este passo
 
@@ -52,7 +44,7 @@ git checkout dev
 git pull origin dev
 ```
 
-Nos repositórios docs e .github, utilize main no lugar de dev.
+Nos repositórios `docs` e `.github`, utilize `main` no lugar de `dev`.
 
 ### 3. Crie a branch
 
@@ -74,13 +66,15 @@ chore/ETI-215-configurar-eslint
 
 ### 4. Trabalhe e commite
 
-🔻 **Faça pelo menos um commit e um push a cada dia trabalhado.** Deixar o trabalho exclusivamente na máquina local por dias é NC **grave**, com desconto por ocorrência, conforme o regulamento.
+**Faça pelo menos um commit e um push a cada dia trabalhado.** Trabalho que fica só na sua máquina não aparece para o time e se perde se algo der errado.
 
 ```bash
 git status
 git add src/caminho/do/arquivo.tsx
 git commit -m "ETI-183 feat: adiciona formulário de cadastro de lojista"
 ```
+
+Prefira `git add` com o caminho de cada arquivo em vez de `git add .`, para que só entre no commit o que você pretende.
 
 No **primeiro push** da branch, avise o Git para onde ela vai:
 
@@ -90,28 +84,28 @@ git push -u origin feat/ETI-183-cadastro-lojista
 
 Daí em diante, basta `git push`.
 
+No `frontend` e no `mobile`, um hook de pre-commit formata e corrige o lint dos arquivos do commit automaticamente. Veja [Hook de pre-commit](#hook-de-pre-commit).
+
 ### 5. Review
 
-- **Uma aprovação** obrigatória, de quem não é o autor
+- **Uma aprovação** obrigatória, de quem não é o autor, entre os code owners do repositório
 - **Checks do CI verdes.** PR com check falhando não pode ser mergeado
-- O revisor deve responder em até 24 horas úteis.
-- Se não houver retorno nesse prazo, solicite apoio no canal do projeto.
+- O revisor deve responder em até 24 horas úteis
+- Se não houver retorno nesse prazo, solicite apoio no canal do projeto
+
+No repositório `.github`, mantido por uma única pessoa, o PR é obrigatório, mas não exige aprovação.
 
 ### 6. Merge
 
-Utilize a opção **Merge pull request**, que gera um merge commit conforme a configuração do repositório.
-
-🔻 O merge deve preservar o commit de merge (--no-ff). Fazer merge sem gerar esse commit é NC. Por isso, squash e rebase estão desabilitados no GitHub.
+Utilize a opção **Merge pull request**, que gera um merge commit. O merge sempre preserva o commit de merge (`--no-ff`): squash e rebase estão desabilitados por configuração.
 
 O commit de merge leva só o título do PR. A descrição fica no PR, no GitHub.
 
-**Consequência prática:** o merge commit normalmente preserva os commits individuais da branch no histórico do projeto. Por isso, a mensagem de cada commit precisa descrever adequadamente o que foi alterado.
+**Consequência prática:** o merge commit preserva os commits individuais da branch no histórico do projeto. Por isso, a mensagem de cada commit precisa descrever adequadamente o que foi alterado.
 
 ---
 
 ## Mensagem de commit
-
-🔻 Commits que não descrevem adequadamente as alterações realizadas podem configurar NC, conforme o regulamento.
 
 Como usamos merge commit, **cada commit seu vai para o histórico do projeto**.
 
@@ -134,7 +128,7 @@ ETI-203 docs: atualiza documentação dos endpoints de pedido
 | `docs` | Só documentação |
 | `refactor` | Muda o código sem mudar o comportamento |
 | `test` | Adiciona ou corrige teste |
-| `chore` | Tarefa sem impacto no código de produção |
+| `chore` | Tarefa sem impacto no código de produção, inclusive formatação |
 | `build` | Dependências, Maven, package.json |
 | `ci` | Workflows e pipeline |
 | `perf` | Melhoria de performance |
@@ -149,7 +143,7 @@ arrumando
 ajustes
 ```
 
-Nenhum deles descreve o que foi feito. Todos são NC.
+Nenhum deles descreve o que foi feito.
 
 ### Regra prática
 
@@ -157,19 +151,26 @@ Faça commits por unidades de trabalho que façam sentido individualmente. Se um
 
 Em caso de dúvida entre dois tipos, escolha o mais adequado e mantenha a consistência do padrão.
 
-### Errou a mensagem?
+### Errou a mensagem ou esqueceu um arquivo?
 
 Se **ainda não deu push**:
 
 ```bash
+git add <arquivo esquecido>
 git commit --amend -m "ETI-183 feat: mensagem corrigida"
 ```
 
-Seguro - o commit só existe na sua máquina.
+Seguro: o commit só existe na sua máquina.
 
-Se **já deu push**: deixe como está e avise no canal. Corrigir exigiria
-reescrever o histórico e `push --force`, que está bloqueado justamente para
-ninguém perder trabalho.
+Se **já deu push, mas o PR ainda não recebeu review**, você pode corrigir na sua própria branch e atualizar com:
+
+```bash
+git push --force-with-lease
+```
+
+O `--force-with-lease` recusa o push se alguém tiver enviado algo para a branch depois de você, então não sobrescreve trabalho de outra pessoa.
+
+Se **o PR já recebeu review**, não reescreva o histórico: faça um commit novo com a correção. Em `main` e `dev`, o force push é bloqueado pelo GitHub.
 
 ---
 
@@ -188,18 +189,18 @@ release: o título segue o mesmo formato, com o card do Jira correspondente.
 
 ## Verificações automáticas
 
-Todo PR passa por estes checks:
+Todo PR passa por checks que rodam no GitHub Actions. Os obrigatórios precisam estar verdes para o merge ser liberado.
 
-| Check | O quê | Fora do padrão |
-| --- | --- | --- |
-| `governanca / Governança` | Título do PR | Bloqueia o merge |
-| | Nome da branch | Bloqueia o merge |
-| | Mensagens de commit | Só avisa, com uma anotação amarela no PR |
-| `qualidade / Qualidade` | Lint, tipos e build | Bloqueia o merge |
-| `qualidade / Formatação` | Prettier | Bloqueia o merge |
+| Check | O quê | Repositórios | Fora do padrão |
+| --- | --- | --- | --- |
+| `governanca / Governança` | Título do PR e nome da branch | todos | Bloqueia o merge |
+| | Mensagens de commit | todos | Só avisa, com uma anotação amarela no PR |
+| `qualidade / Qualidade` | Lint, tipos e build | `frontend` | Bloqueia o merge |
+| | Lint e tipos | `mobile` | Bloqueia o merge |
+| | Build e testes (`mvn verify`, com PostgreSQL) | `backend` | Bloqueia o merge |
+| `qualidade / Formatação` | Prettier | `frontend`, `mobile` | Bloqueia o merge |
 
-Os checks de qualidade rodam no frontend. O backend e o mobile ganham os
-deles em seguida.
+Os workflows ficam centralizados no repositório `.github` e são reaproveitados por todos os repositórios.
 
 **Título errado:** edite o título do PR. O check roda de novo sozinho.
 
@@ -213,18 +214,19 @@ git push -u origin feat/ETI-183-nome-certo
 
 Feche o PR antigo com um comentário apontando para o novo.
 
-**Commit fora do padrão:** não bloqueia, porque um commit já enviado só se
-corrige com `push --force`, que é proibido. O revisor cobra, e os próximos
+**Commit fora do padrão:** não bloqueia. O revisor cobra, e os próximos
 commits saem no padrão.
 
-**Qualidade falhou:** abra o check, veja qual passo ficou vermelho (Lint,
-Verificar tipos ou Build) e rode o mesmo comando na sua máquina para ver o
-erro completo:
+**Qualidade falhou:** abra o check, veja qual passo ficou vermelho e rode o mesmo comando na sua máquina para ver o erro completo:
 
 ```bash
+# frontend e mobile
 npm run lint
 npm run typecheck
-npm run build
+npm run build        # só no frontend
+
+# backend
+mvn verify
 ```
 
 **Formatação falhou:** rode o Prettier e commite o resultado:
@@ -232,8 +234,20 @@ npm run build
 ```bash
 npm run format
 git add <arquivos formatados>
-git commit -m "ETI-XXX style: aplica formatação do prettier"
+git commit -m "ETI-XXX chore: aplica formatação do prettier"
 ```
+
+### Hook de pre-commit
+
+No `frontend` e no `mobile`, cada `git commit` roda automaticamente `eslint --fix` e `prettier --write` nos arquivos que estão entrando no commit (`husky` + `lint-staged`). Os arquivos já entram formatados, e o commit é bloqueado se sobrar algum erro de lint.
+
+O hook é instalado pelo `npm install`. Depois de clonar o projeto, ou se o hook não estiver rodando, execute `npm install` uma vez.
+
+O check de formatação do CI continua como rede de segurança, para commits feitos com `--no-verify` ou pela interface do GitHub.
+
+### Bypass das regras
+
+Os administradores da organização (Gabriel Rodrigues e Hugo Zuin) podem ignorar as regras de proteção de um PR. O uso é restrito a **PRs de CI e governança**, quando a própria mudança precisa ser validada antes de existir uma aprovação possível. Quem usar o bypass deixa um comentário no PR explicando o motivo.
 
 ---
 
@@ -248,11 +262,11 @@ Nesta ordem:
 5. As mensagens de commit descrevem o que foi feito?
 6. Dá para entender daqui a seis meses?
 
-O item 5 importa porque os commits vão para o histórico, e commit ruim
-aprovado no review vira NC do time inteiro.
+O item 5 importa porque os commits vão para o histórico, e um commit ruim
+aprovado no review fica lá para sempre.
 
 **Não revise** formatação, aspas ou ponto e vírgula. Isso é trabalho do
-linter, e discussão de estilo em review só desgasta a equipe.
+linter e do Prettier, e discussão de estilo em review só desgasta a equipe.
 
 ---
 
@@ -263,8 +277,16 @@ decidir que há um conjunto estável.
 
 1. Abre-se um PR de `dev` para `main`
 2. Título: `chore/ETI-XXX-release-sprint-n` (ex.: `chore/ETI-310-release-sprint-12`)
-3. Mesma exigência de aprovação
+3. Mesma exigência de aprovação e de checks
 4. Merge commit, como qualquer outro
+5. Depois do merge, crie uma tag anotada na `main` com a versão:
+
+```bash
+git checkout main
+git pull origin main
+git tag -a v1.0.0 -m "Release v1.0.0"
+git push origin v1.0.0
+```
 
 Nada é desenvolvido diretamente na `main`.
 
@@ -287,6 +309,7 @@ não a conhece.
 1. **Mesma chave Jira** nos dois repositórios
 2. **Backend mergeia primeiro, sempre.** Cliente nunca vai para a `dev`
    chamando endpoint que ainda não existe
+3. Na descrição do PR, aponte o PR do outro repositório em Observações
 
 ---
 
@@ -296,7 +319,7 @@ não a conhece.
 | --- | --- |
 | `.env` | Só na sua máquina |
 | Chaves do gateway de pagamento | `.env` |
-| Senha do banco, `JWT_SECRET` | `.env` |
+| Senha do banco | `.env` |
 | `google-services.json`, keystore Android | Local |
 | `*.pem`, `*.key`, `id_rsa` | Lugar nenhum |
 | **Dump de banco com CPF/CNPJ real** | Lugar nenhum |
@@ -304,39 +327,11 @@ não a conhece.
 Adicionou variável de ambiente nova? **Adicione também no `.env.example`**,
 sem o valor. Senão quebra o setup do resto do time.
 
-### Se uma credencial vazar
-
-1. **Invalide a credencial agora.** Rotacione a chave, troque a senha. Este é
-   o passo 1, não o 3
-2. Avise a equipe
-3. Só então se preocupe com o histórico
+Variáveis com prefixo `NEXT_PUBLIC_` (frontend) e `EXPO_PUBLIC_` (mobile) são
+incorporadas ao código que vai para o usuário: nunca coloque segredos nelas.
 
 Deletar o arquivo e commitar de novo **não resolve** - o conteúdo continua
 acessível em qualquer commit anterior.
-
-### Dados pessoais
-
-O projeto lida com CPF, CNPJ e dados bancários. Em repositório público, um
-`seed.sql` com dado real de colega é vazamento de verdade, não exercício
-acadêmico. Use gerador de dados fake.
-
----
-
-## Comandos que exigem cuidado
-
-| Comando | O que faz | Quando usar |
-| --- | --- | --- |
-| `git reset --soft HEAD~1` | Desfaz o commit, **mantém as alterações** | Seguro. Errou a mensagem antes do push |
-| `git reset --hard` | Desfaz o commit **e apaga as alterações** | Só na sua branch local. **Nunca em `main` ou `dev`** |
-| `git push --force` | Sobrescreve o histórico remoto | **Bloqueado** em `main` e `dev`, **proibido** nas demais. Único jeito de perder trabalho no Git |
-| `git branch -d` | Deleta **se já foi mergeada** | Seguro. Use sempre este |
-| `git branch -D` | Deleta **mesmo sem merge** | Perde o que não foi mergeado |
-| `git commit --amend` | Substitui o último commit | Só antes do push |
-| `git revert <hash>` | Cria um commit que **desfaz** outro | Forma correta de reverter algo já mergeado |
-| `docker compose down -v` | Para os containers **e apaga o banco** | Só se quiser zerar os dados |
-
-**A regra que resume tudo:** se o comando reescreve algo que você já enviou
-para o GitHub, pare e pergunte no canal antes.
 
 ---
 
@@ -344,15 +339,10 @@ para o GitHub, pare e pergunte no canal antes.
 
 Sprints de duas semanas, com review e retrospectiva ao final.
 
-- Branch dura **2–3 dias**, nunca atravessa a sprint
 - PR não fechou até o fim da sprint? Ou fecha, ou volta ao backlog
-- Não acumule PRs para o último dia, cinco PRs na véspera significa cinco
-  aprovações automáticas
-- **Nada de merge sem review em véspera de entrega**
-
-🔻 **Aponte as horas no Jira no dia em que trabalhou**, nunca consolidado no
-fim da semana. Apontamento inconsistente é NC.
-
-🔻 **Compareça às reuniões do time.** Máximo de 1 falta a cada 4. Faltar às
-reuniões bimestrais de apresentação do projeto faz a equipe inteira perder a
-nota do bimestre.
+- Não acumule PRs para o último dia: cinco PRs na véspera significam cinco
+  revisões feitas às pressas
+- **Nada de merge sem review**
+- **Aponte as horas no Jira no dia em que trabalhou**, nunca consolidado no
+  fim da semana
+- **Compareça às reuniões do time**
