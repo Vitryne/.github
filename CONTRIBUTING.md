@@ -279,14 +279,6 @@ decidir que há um conjunto estável.
 2. Título: `chore/ETI-XXX-release-sprint-n` (ex.: `chore/ETI-310-release-sprint-12`)
 3. Mesma exigência de aprovação e de checks
 4. Merge commit, como qualquer outro
-5. Depois do merge, crie uma tag anotada na `main` com a versão:
-
-```bash
-git checkout main
-git pull origin main
-git tag -a v1.0.0 -m "Release v1.0.0"
-git push origin v1.0.0
-```
 
 Nada é desenvolvido diretamente na `main`.
 
